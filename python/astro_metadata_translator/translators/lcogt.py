@@ -118,7 +118,7 @@ class LcogtTranslator(FitsTranslator):
         # Docstring will be inherited. Property defined in properties.py
         radecsys = ("RADECSYS",)
         radecpairs = (("RA", "DEC"),)
-        return tracking_from_degree_headers(self, radecsys, radecpairs, unit=u.deg)
+        return tracking_from_degree_headers(self, radecsys, radecpairs, unit=(u.hourangle, u.deg))
 
     @cache_translation
     def to_datetime_begin(self) -> astropy.time.Time:
@@ -262,7 +262,6 @@ class LcogtTranslator(FitsTranslator):
         # as we go to each HDU.
         with fits.open(filename) as fits_file:
             for hdu in fits_file:
-                print("hdu name=", hdu.name)
                 # Astropy <=4.2 strips the EXTNAME header but some CFHT data
                 # have two EXTNAME headers and the CCD number is in the
                 # second one.
