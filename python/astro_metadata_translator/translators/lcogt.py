@@ -53,7 +53,7 @@ class LcogtTranslator(FitsTranslator):
     _const_map = {
         "boresight_rotation_angle": Angle(90 * u.deg),
         "boresight_rotation_coord": "sky",
-        "detector_num": 0,
+        "detector_num": 1,
         "detector_group": None,
         "exposure_group": None
     }
@@ -169,6 +169,27 @@ class LcogtTranslator(FitsTranslator):
         if obstype == "expose":
             return "science"
         return obstype
+
+
+    @cache_translation
+    def to_observation_reason(self) -> str:
+        """Return the reason this observation was taken.
+
+        Base class implementation returns the ``science`` if the
+        ``observation_type`` is science, else ``unknown``.
+        A subclass may do something different.
+
+        Returns
+        -------
+        name : `str`
+            The reason for this observation.
+        """
+        obstype = self.to_observation_type()
+        if obstype == "science":
+            return "science"
+        elif obstype in ('bias', 'dark', 'flat', 'arc', 'lampflat'):
+            return "calibration"
+        return "unknown"
 
     @cache_translation
     def to_exposure_id(self) -> int:
